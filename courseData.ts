@@ -65,3 +65,4 @@ export const courses: Course[] = [
 ];
 
 // npx convex import --table courses courseData.json
+//  stripe listen --forward-to localhost:3000/api/webhooks/stripe

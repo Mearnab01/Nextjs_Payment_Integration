@@ -7,12 +7,22 @@ import {
   Linkedin,
   Mail,
   Heart,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 bg-gray-900/80 backdrop-blur-md border-t border-gray-700/50 mt-20">
-      {/* Decorative gradient line */}
+    <footer className="relative z-10 bg-gradient-to-b from-gray-900 to-black border-t border-gray-700/30 mt-20 overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute -top-10 left-1/4 opacity-10">
+        <Sparkles size={80} className="text-cyan-400" />
+      </div>
+      <div className="absolute bottom-10 right-1/4 opacity-10">
+        <Sparkles size={60} className="text-purple-400" />
+      </div>
+
+      {/* Gradient line */}
       <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
 
       <div className="container mx-auto px-4 py-12">
@@ -29,121 +39,87 @@ const Footer = () => {
               experts and advance your career.
             </p>
             <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                aria-label="GitHub"
-              >
-                <Github className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
+              {[
+                { icon: Twitter, label: "Twitter" },
+                { icon: Github, label: "GitHub" },
+                { icon: Instagram, label: "Instagram" },
+                { icon: Linkedin, label: "LinkedIn" },
+              ].map((social, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-all duration-300 p-2 rounded-full bg-gray-800 hover:bg-cyan-900/30 hover:scale-110"
+                  aria-label={social.label}
+                >
+                  <social.icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               Quick Links
+              <span className="ml-2 text-cyan-400">
+                <ArrowRight size={16} />
+              </span>
             </h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/courses"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Browse Courses
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/pro"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Pro Membership
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/instructors"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  For Instructors
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Blog
-                </Link>
-              </li>
+              {[
+                { href: "/courses", text: "Browse Courses" },
+                { href: "/pro", text: "Pro Membership" },
+                { href: "/instructors", text: "For Instructors" },
+                { href: "/blog", text: "Blog" },
+              ].map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-cyan-400 transition-all duration-300 flex items-center group"
+                  >
+                    <span className="w-2 h-2 bg-cyan-500 rounded-full opacity-0 group-hover:opacity-100 mr-2 transition-opacity"></span>
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Support</h3>
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              Support
+              <span className="ml-2 text-cyan-400">
+                <ArrowRight size={16} />
+              </span>
+            </h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/help"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-gray-400 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
+              {[
+                { href: "/help", text: "Help Center" },
+                { href: "/faq", text: "FAQ" },
+                { href: "/contact", text: "Contact Us" },
+                { href: "/privacy", text: "Privacy Policy" },
+              ].map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-cyan-400 transition-all duration-300 flex items-center group"
+                  >
+                    <span className="w-2 h-2 bg-cyan-500 rounded-full opacity-0 group-hover:opacity-100 mr-2 transition-opacity"></span>
+                    {link.text}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               Stay Updated
+              <span className="ml-2 text-cyan-400">
+                <Mail size={18} />
+              </span>
             </h3>
             <p className="text-gray-400 mb-4">
               Subscribe to our newsletter for the latest courses and updates.
@@ -154,27 +130,28 @@ const Footer = () => {
                 <input
                   type="email"
                   placeholder="Your email"
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300"
+                className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center group"
               >
                 Subscribe
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        {/* Bottom Bar - Responsive layout */}
+        <div className="border-t border-gray-800/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-gray-500 text-sm flex items-center">
             Made with{" "}
-            <Heart className="h-4 w-4 mx-1 text-rose-500 fill-current" /> by
-            CourseFlow Team
+            <Heart className="h-4 w-4 mx-1 text-rose-500 fill-current animate-pulse" />{" "}
+            by CourseFlow Team
           </p>
-          <p className="text-gray-500 text-sm mt-4 md:mt-0">
+          <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} CourseFlow. All rights reserved.
           </p>
         </div>
