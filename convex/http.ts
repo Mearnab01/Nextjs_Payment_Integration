@@ -3,7 +3,7 @@ import { httpAction } from "./_generated/server";
 import { Webhook } from "svix";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { api } from "./_generated/api";
-// import stripe from "../src/lib/stripe";
+import stripe from "../lib/stripe";
 // import resend from "../src/lib/resend";
 // import WelcomeEmail from "../src/emails/WelcomeEmail";
 
@@ -50,17 +50,17 @@ const clerkWebhook = httpAction(async (ctx, request) => {
     const name = `${first_name || ""} ${last_name || ""}`.trim();
 
     try {
-      //   const customer = await stripe.customers.create({
-      //     email,
-      //     name,
-      //     metadata: { clerkId: id },
-      //   });
+      const customer = await stripe.customers.create({
+        email,
+        name,
+        metadata: { clerkId: id },
+      });
 
       await ctx.runMutation(api.users.createUser, {
         email,
         name,
         clerkId: id,
-        stripeCustomerId: "", // TODO: Replace with actual Stripe customer ID if available
+        stripeCustomerId: customer.id,
       });
 
       //   if (process.env.NODE_ENV === "development") {

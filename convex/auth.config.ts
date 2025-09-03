@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: process.env.CLERK_JWT_ISSUER_DOMAIN!,
+      domain: "https://fitting-vulture-9.clerk.accounts.dev/",
       applicationID: "convex",
     },
   ],

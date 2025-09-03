@@ -63,3 +63,5 @@ export const courses: Course[] = [
     price: 29.99,
   },
 ];
+
+// npx convex import --table courses courseData.json
