@@ -75,6 +75,8 @@ export const createCheckoutSession = action({
 export const createProPlanCheckoutSession = action({
   args: { planId: v.union(v.literal("month"), v.literal("year")) },
   handler: async (ctx, args): Promise<{ checkoutUrl: string | null }> => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    // TODO: console.log("Final URL:", `${process.env.NEXT_PUBLIC_APP_URL}/courses`);
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new ConvexError("Not authenticated");
@@ -88,11 +90,11 @@ export const createProPlanCheckoutSession = action({
     }
 
     // rate limit
-    // const rateLimitKey = `pro-plan-rate-limit:${user._id}`;
-    // const { success } = await ratelimit.limit(rateLimitKey);
-    // if (!success) {
-    //   throw new Error(`Rate limit exceeded.`);
-    // }
+    const rateLimitKey = `pro-plan-rate-limit:${user._id}`;
+    const { success } = await ratelimit.limit(rateLimitKey);
+    if (!success) {
+      throw new Error(`Rate limit exceeded.`);
+    }
 
     let priceId;
     if (args.planId === "month") {
@@ -109,8 +111,8 @@ export const createProPlanCheckoutSession = action({
       customer: user.stripeCustomerId,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/pro/success?session_id={CHECKOUT_SESSION_ID}&year=${args.planId === "year"}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pro`,
+      success_url: `${appUrl}/pro/success?session_id={CHECKOUT_SESSION_ID}&year=${args.planId === "year"}`,
+      cancel_url: `${appUrl}/pro`,
 
       metadata: { userId: user._id, planId: args.planId },
     });

@@ -12,17 +12,69 @@ import { Check, Crown, Zap, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PRO_PLANS } from "@/constants";
 import { motion } from "framer-motion";
+import { useUser } from "@clerk/nextjs";
+import { useAction, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useState } from "react";
+import AppLoader from "@/components/styled/Loader";
+import { toast } from "sonner";
 
 const ProPage = () => {
+  const { user, isLoaded: isUserLoaded } = useUser();
+  const [loadingPlan, setLoadingPlan] = useState("");
+  const userData = useQuery(
+    api.users.getUserByClerkId,
+    user ? { clerkId: user?.id } : "skip"
+  );
+
+  const userSubscription = useQuery(
+    api.subscriptions.getUserSubscription,
+    userData ? { userId: userData._id } : "skip"
+  );
+
+  const isYearlySubscriptionActive =
+    userSubscription?.status === "active" &&
+    userSubscription?.planType === "year";
+  const createProPlanCheckoutSession = useAction(
+    api.stripe.createProPlanCheckoutSession
+  );
+
+  // Handle pro plan selection and initiate checkout
+  const handlePlanSelection = async (planId: "month" | "year") => {
+    if (!user)
+      return toast.error("Please sign in to select a plan.", {
+        id: "login-error",
+        duration: 4000,
+        position: "top-center",
+      });
+    setLoadingPlan(planId);
+    try {
+      const result = await createProPlanCheckoutSession({ planId });
+      if (result && result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+      } else {
+        console.error("No checkout URL returned");
+        toast.error("Failed to initiate checkout. Please try again.", {
+          id: "checkout-error",
+          duration: 4000,
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      toast.error("Failed to initiate checkout. Please try again.", {
+        id: "checkout-error",
+        duration: 4000,
+        position: "top-center",
+      });
+      setLoadingPlan("");
+    }
+  };
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
   };
 
   const itemVariants = {
@@ -30,10 +82,7 @@ const ProPage = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 100,
-      },
+      transition: { type: "spring" as const, stiffness: 100 },
     },
   };
 
@@ -59,21 +108,25 @@ const ProPage = () => {
         </motion.div>
 
         {/* Active subscription message */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-purple-500/30 p-4 mb-10 rounded-xl backdrop-blur-sm flex items-center justify-center"
-        >
-          <div className="flex items-center">
-            <Sparkles className="h-5 w-5 text-amber-400 mr-2" />
-            <p className="text-purple-200">
-              You have an active{" "}
-              <span className="font-semibold text-amber-300">year</span>{" "}
-              subscription. Thank you for your support!
-            </p>
-          </div>
-        </motion.div>
+        {isUserLoaded && userSubscription?.status === "active" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-purple-500/30 p-4 mb-10 rounded-xl backdrop-blur-sm flex items-center justify-center"
+          >
+            <div className="flex items-center">
+              <Sparkles className="h-5 w-5 text-amber-400 mr-2" />
+              <p className="text-purple-200">
+                You have an active{" "}
+                <span className="font-semibold text-amber-300">
+                  {userSubscription.planType}
+                </span>{" "}
+                subscription. Thank you for your support!
+              </p>
+            </div>
+          </motion.div>
+        )}
 
         {/* Plans grid */}
         <motion.div
@@ -104,7 +157,7 @@ const ProPage = () => {
                         POPULAR
                       </div>
                     </div>
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600" />
                   </>
                 )}
 
@@ -161,16 +214,57 @@ const ProPage = () => {
                 </CardContent>
 
                 <CardFooter className="mt-auto pt-0">
-                  <Button
-                    className={`w-full py-6 text-lg font-semibold transition-all duration-300 ${
-                      plan.highlighted
-                        ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-amber-500/30"
-                        : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-md hover:shadow-purple-500/20"
-                    }`}
-                    size="lg"
-                  >
-                    {plan.ctaText}
-                  </Button>
+                  {(() => {
+                    // ---------- Simplified Variables ----------
+                    const isUserActive = userSubscription?.status === "active";
+                    const currentPlanType =
+                      userSubscription?.planType?.toLowerCase();
+                    const selectedPlanId = plan.id.toLowerCase();
+
+                    // Is the current plan the same as this card plan
+                    const isCurrentPlan =
+                      isUserActive && currentPlanType === selectedPlanId;
+
+                    // Prevent selecting monthly if yearly is already active
+                    const isYearlyAndMonthlyConflict =
+                      isUserActive &&
+                      plan.id === "month" &&
+                      isYearlySubscriptionActive;
+
+                    // Disable button when user already has a subscription
+                    const isButtonDisabled =
+                      isUserActive &&
+                      (isCurrentPlan || isYearlySubscriptionActive);
+
+                    // Loading state for processing subscription
+                    const isProcessing = loadingPlan === plan.id;
+
+                    return (
+                      <Button
+                        size="lg"
+                        onClick={() =>
+                          handlePlanSelection(plan.id as "month" | "year")
+                        }
+                        disabled={isButtonDisabled}
+                        className={`w-full py-6 text-lg font-semibold transition-all duration-300 ${
+                          plan.highlighted
+                            ? "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg hover:shadow-amber-500/30"
+                            : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-md hover:shadow-purple-500/20"
+                        }`}
+                      >
+                        {/* ---------- Button Text Logic ---------- */}
+                        {isProcessing ? (
+                          <AppLoader text="Processing..." />
+                        ) : isCurrentPlan ? (
+                          "Current Plan"
+                        ) : isYearlyAndMonthlyConflict ? (
+                          "Yearly Plan Active"
+                        ) : (
+                          plan.ctaText
+                        )}
+                      </Button>
+                    );
+                  })()}
                 </CardFooter>
               </Card>
             </motion.div>
