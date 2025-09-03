@@ -28,6 +28,8 @@ import {
 import PurchaseButton from "@/components/PurchaseButton";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Id } from "@/convex/_generated/dataModel";
+import AppLoader from "@/components/styled/Loader";
 
 // Animation variants
 const fadeIn = {
@@ -83,12 +85,7 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
-        <p className="mt-4 text-gray-400">Loading courses...</p>
-      </div>
-    );
+    <AppLoader text="Loading courses" />;
   }
 
   return (
@@ -286,9 +283,9 @@ export default function Home() {
                         </Button>
                       </SignInButton>
                     </SignedOut>
-                    {/*  <SignedIn>
-                      <PurchaseButton courseId={course._id} />
-                    </SignedIn> */}
+                    <SignedIn>
+                      <PurchaseButton courseId={course._id as Id<"courses">} />
+                    </SignedIn>
                   </CardFooter>
                 </Card>
               </motion.div>

@@ -2,10 +2,14 @@ import { ConvexError, v } from "convex/values";
 import { action } from "./_generated/server";
 import { api } from "./_generated/api";
 import stripe from "../lib/stripe";
+import ratelimit from "../lib/ratelimit";
+
 export const createCheckoutSession = action({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args): Promise<{ checkoutUrl: string | null }> => {
     const identity = await ctx.auth.getUserIdentity();
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    // TODO: console.log("Final URL:", `${process.env.NEXT_PUBLIC_APP_URL}/courses`);
 
     if (!identity) {
       throw new ConvexError("Unauthorized");
@@ -19,12 +23,14 @@ export const createCheckoutSession = action({
       throw new ConvexError("User not found");
     }
 
-    // const rateLimitKey = `checkout-rate-limit:${user._id}`;
-    // const { success } = await ratelimit.limit(rateLimitKey);
+    const rateLimitKey = `checkout-rate-limit:${user._id}`;
+    const { success, reset } = await ratelimit.limit(rateLimitKey);
 
-    // if (!success) {
-    //   throw new Error(`Rate limit exceeded.`);
-    // }
+    if (!success) {
+      throw new Error(
+        `Rate limit exceeded. Try again in ${Math.round(reset / 1000)} seconds.`
+      );
+    }
 
     const course = await ctx.runQuery(api.courses.getCourseById, {
       courseId: args.courseId,
@@ -51,8 +57,8 @@ export const createCheckoutSession = action({
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${args.courseId}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses`,
+      success_url: `${appUrl}/courses/${args.courseId}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/courses`,
 
       metadata: {
         courseId: args.courseId,

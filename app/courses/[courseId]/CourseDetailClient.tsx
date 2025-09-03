@@ -272,12 +272,12 @@ const CourseDetailPage = ({ courseId }: CourseDetailClientProps) => {
                   <span className="text-gray-400 ml-2">one-time payment</span>
                 </motion.div>
 
-                {/*    <motion.div
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <PurchaseButton courseId={params.courseId} />
-                </motion.div> */}
+                  <PurchaseButton courseId={courseId} />
+                </motion.div>
 
                 <motion.ul
                   className="mt-8 space-y-2 text-sm text-gray-400 max-w-md mx-auto"
