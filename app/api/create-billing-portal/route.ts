@@ -7,7 +7,8 @@ import stripe from "@/lib/stripe";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST() {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "https://courseflow-by-arnab.vercel.app";
 
   // Ensure NEXT_PUBLIC_APP_URL is set
   if (!process.env.NEXT_PUBLIC_APP_URL) {

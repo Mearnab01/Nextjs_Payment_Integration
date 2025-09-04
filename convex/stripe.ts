@@ -8,7 +8,9 @@ export const createCheckoutSession = action({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args): Promise<{ checkoutUrl: string | null }> => {
     const identity = await ctx.auth.getUserIdentity();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://courseflow-by-arnab.vercel.app";
     // TODO: console.log("Final URL:", `${process.env.NEXT_PUBLIC_APP_URL}/courses`);
 
     if (!identity) {
@@ -75,7 +77,9 @@ export const createCheckoutSession = action({
 export const createProPlanCheckoutSession = action({
   args: { planId: v.union(v.literal("month"), v.literal("year")) },
   handler: async (ctx, args): Promise<{ checkoutUrl: string | null }> => {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      "https://courseflow-by-arnab.vercel.app";
     // TODO: console.log("Final URL:", `${process.env.NEXT_PUBLIC_APP_URL}/courses`);
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
