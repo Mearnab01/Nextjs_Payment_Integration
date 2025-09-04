@@ -11,33 +11,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Check,
-  Clock,
-  Rocket,
-  Star,
-  Sparkles,
-  Zap,
-  Crown,
   CheckCircle,
+  Clock,
+  Crown,
+  Rocket,
+  Sparkles,
+  Star,
+  Zap,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import ConfettiWrapper from "@/components/styled/ConfettiWrapper";
+import SuccessFooter from "./SuccessFooter";
 
 const SuccessPage = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isYearly = searchParams.get("year") === "true";
-  const [confettiActive, setConfettiActive] = useState(true);
-
-  useEffect(() => {
-    // Auto-dismiss confetti after 5 seconds
-    const timer = setTimeout(() => {
-      setConfettiActive(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const benefits = isYearly
     ? [
@@ -54,14 +43,11 @@ const SuccessPage = () => {
         "Join monthly live sessions with top instructors",
       ];
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -70,52 +56,22 @@ const SuccessPage = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        type: "spring" as const,
-        stiffness: 100,
-      },
+      transition: { type: "spring" as const, stiffness: 100 },
     },
   };
 
   return (
-    <div className="min-h-screen text-white flex items-center justify-center p-4">
-      {/* Confetti effect */}
-      {confettiActive && (
-        <div className="fixed inset-0 pointer-events-none z-50 flex justify-center items-start overflow-hidden">
-          {[...Array(30)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute text-2xl"
-              initial={{ y: -100, opacity: 1, rotate: 0 }}
-              animate={{
-                y: window.innerHeight,
-                opacity: 0,
-                rotate: 360,
-                x: Math.sin(i * 36) * 200,
-              }}
-              transition={{
-                duration: 2 + Math.random() * 2,
-                delay: Math.random() * 0.5,
-                ease: "easeOut",
-              }}
-            >
-              <Sparkles
-                className={isYearly ? "text-amber-400" : "text-cyan-400"}
-                size={20}
-              />
-            </motion.div>
-          ))}
-        </div>
-      )}
+    <div className="min-h-screen text-white flex items-center justify-center p-4 relative">
+      <ConfettiWrapper />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl"
+        className="w-full max-w-2xl relative z-10"
       >
         <Card className="w-full overflow-hidden bg-gray-800/70 backdrop-blur-md border-0 relative">
-          {/* Gradient top bar */}
+          {/* Gradient Top Bar */}
           <div
             className={`w-full h-3 ${
               isYearly
@@ -124,7 +80,7 @@ const SuccessPage = () => {
             }`}
           />
 
-          {/* Decorative corner elements */}
+          {/* Decorative Icons */}
           <div className="absolute top-4 right-4 opacity-20">
             <Crown
               size={32}
@@ -138,6 +94,7 @@ const SuccessPage = () => {
             />
           </div>
 
+          {/* Card Header */}
           <CardHeader className="text-center pb-6">
             <motion.div
               initial={{ scale: 0 }}
@@ -173,6 +130,7 @@ const SuccessPage = () => {
             </motion.div>
           </CardHeader>
 
+          {/* Benefits Section */}
           <CardContent className="pb-8">
             <motion.div
               variants={containerVariants}
@@ -207,35 +165,12 @@ const SuccessPage = () => {
             </motion.div>
           </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4 pt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="w-full"
-            >
-              <Button
-                className="w-full text-lg py-6 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 border-0 transition-all duration-300 group"
-                size="lg"
-                onClick={() => router.push("/courses")}
-              >
-                <Rocket className="mr-2 h-5 w-5 group-hover:translate-y-[-2px] transition-transform" />
-                Start Your Pro Journey
-              </Button>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="text-sm text-gray-400 text-center"
-            >
-              Excited to get started? Explore your new Pro features now!
-            </motion.p>
-          </CardFooter>
+          {/* Footer Section */}
+          <SuccessFooter />
         </Card>
       </motion.div>
     </div>
   );
 };
+
 export default SuccessPage;

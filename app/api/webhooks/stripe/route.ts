@@ -121,21 +121,6 @@ async function handleSubscriptionUpsert(
     );
 
     const isCreation = eventType === "customer.subscription.created";
-
-    /* if (isCreation && process.env.NODE_ENV === "development") {
-      await resend.emails.send({
-        from: "MasterClass <onboarding@resend.dev>",
-        to: user.email,
-        subject: "Welcome to MasterClass Pro!",
-        react: ProPlanActivatedEmail({
-          name: user.name,
-          planType: subscription.items.data[0].plan.interval,
-          currentPeriodStart: subscription.current_period_start,
-          currentPeriodEnd: subscription.current_period_end,
-          url: process.env.NEXT_PUBLIC_APP_URL!,
-        }),
-      });
-    } */
   } catch (error) {
     console.error(
       `Error processing ${eventType} for subscription ${subscription.id}:`,

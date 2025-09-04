@@ -149,7 +149,7 @@ const Footer = () => {
           <p className="text-gray-500 text-sm flex items-center">
             Made with{" "}
             <Heart className="h-4 w-4 mx-1 text-rose-500 fill-current animate-pulse" />{" "}
-            by CourseFlow Team
+            by Arnab Nath
           </p>
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} CourseFlow. All rights reserved.

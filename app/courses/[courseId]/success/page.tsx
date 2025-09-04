@@ -18,7 +18,9 @@ import Link from "next/link";
 
 import ConfettiWrapper from "@/components/styled/ConfettiWrapper";
 import AnimatedBackground from "@/components/styled/AnimatedBackground";
-import BenefitItem from "@/components/styled/BenefitItem";
+import BenifitFooter from "@/components/styled/BenifitFooter";
+import BenefitsGrid from "@/components/styled/BenifitGrid";
+import { useUser } from "@clerk/nextjs";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -39,6 +41,7 @@ const SuccessPage = ({
 }) => {
   const { courseId } = params;
   const { session_id } = searchParams;
+  const { user } = useUser();
 
   return (
     <div className="success-bg">
@@ -46,15 +49,15 @@ const SuccessPage = ({
       <AnimatedBackground />
 
       <motion.div
-        className="max-w-2xl mx-auto relative z-10 px-4 py-12"
+        className="max-w-4xl mx-auto relative z-10 px-4 py-12"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
       >
         {/* Title */}
         <motion.div variants={fadeIn} className="text-center mb-8">
-          <h1 className="text-5xl font-bold gradient-text mb-2">
-            Congratulations!
+          <h1 className="text-5xl font-bold gradient-text mb-6 p-2">
+            Congratulations, {user?.firstName || "Learner"}!
           </h1>
           <p className="text-xl text-gray-300">
             You've successfully enrolled in the course
@@ -110,35 +113,7 @@ const SuccessPage = ({
             </motion.div>
 
             {/* Benefits */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left"
-              variants={staggerContainer}
-            >
-              {[
-                {
-                  icon: <Clock className="h-5 w-5 text-cyan-400" />,
-                  text: "Lifetime access",
-                },
-                {
-                  icon: <Gift className="h-5 w-5 text-purple-400" />,
-                  text: "Certificate included",
-                },
-                {
-                  icon: <Zap className="h-5 w-5 text-amber-400" />,
-                  text: "Downloadable resources",
-                },
-                {
-                  icon: <Star className="h-5 w-5 text-yellow-400" />,
-                  text: "Community support",
-                },
-              ].map((benefit, index) => (
-                <BenefitItem
-                  key={index}
-                  icon={benefit.icon}
-                  text={benefit.text}
-                />
-              ))}
-            </motion.div>
+            <BenefitsGrid />
 
             {/* Buttons */}
             <motion.div
@@ -160,17 +135,7 @@ const SuccessPage = ({
             </motion.div>
 
             {/* Footer note */}
-            <motion.div
-              className="pt-6 border-t border-gray-700/50"
-              variants={fadeIn}
-            >
-              <div className="flex items-center justify-center text-sm text-gray-400">
-                <Star className="h-4 w-4 text-amber-400 mr-1 fill-current" />
-                <span>
-                  Your learning adventure awaits. What will you master next?
-                </span>
-              </div>
-            </motion.div>
+            <BenifitFooter />
           </CardContent>
         </Card>
       </motion.div>

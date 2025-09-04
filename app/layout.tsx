@@ -4,7 +4,7 @@ import "./globals.css";
 import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
-import EnhancedGrid from "@/components/EnhancedGrid";
+import EnhancedGrid from "@/components/styled/EnhancedGrid";
 import Footer from "@/components/Footer";
 
 const inter = Inter({
