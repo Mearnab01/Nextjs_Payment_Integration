@@ -17,8 +17,9 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (error: any) {
-    console.log(`Webhook signature verification failed.`, error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.log(`Webhook signature verification failed.`, message);
     return new Response("Webhook signature verification failed.", {
       status: 400,
     });
@@ -120,7 +121,7 @@ async function handleSubscriptionUpsert(
       `Successfully processed ${eventType} for subscription ${subscription.id}`
     );
 
-    const isCreation = eventType === "customer.subscription.created";
+    // const isCreation = eventType === "customer.subscription.created";
   } catch (error) {
     console.error(
       `Error processing ${eventType} for subscription ${subscription.id}:`,

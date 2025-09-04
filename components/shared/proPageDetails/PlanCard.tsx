@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Zap, Star, Check } from "lucide-react";
+import { Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PlanFeaturesList from "./PlanFeaturesList";
 import AppLoader from "@/components/styled/Loader";

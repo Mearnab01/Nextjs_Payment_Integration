@@ -17,7 +17,7 @@ const CourseSidebar = () => (
     className="bg-gray-800/40 backdrop-blur-md rounded-2xl p-6 border border-gray-700/50 sticky top-24"
     variants={fadeIn}
   >
-    <h3 className="text-lg font-semibold mb-4">What You'll Learn</h3>
+    <h3 className="text-lg font-semibold mb-4">What You will Learn</h3>
     <ul className="space-y-3">
       {[
         "Master advanced development patterns",

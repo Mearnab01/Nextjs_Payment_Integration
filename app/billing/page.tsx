@@ -35,10 +35,12 @@ const BillingPage = () => {
       const { url } = await response.json();
       if (url) window.location.href = url;
       else throw new Error("Failed to create billing portal");
-    } catch (error: any) {
-      toast.error(
-        error.message || "Something went wrong. Please try again later."
-      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong. Please try again later.");
+      }
     } finally {
       setIsLoading(false);
     }

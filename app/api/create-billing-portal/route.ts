@@ -42,11 +42,15 @@ export async function POST() {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating billing portal session:", error);
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error";
+
     return NextResponse.json(
       {
-        error: error?.message || "Internal server error",
+        error: errorMessage,
         details: error,
       },
       { status: 500 }

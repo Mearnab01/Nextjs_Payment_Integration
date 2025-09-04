@@ -1,24 +1,14 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CheckCircle,
-  Clock,
-  Crown,
-  Rocket,
-  Sparkles,
-  Star,
-  Zap,
-} from "lucide-react";
+import { CheckCircle, Clock, Crown, Sparkles, Star, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import ConfettiWrapper from "@/components/styled/ConfettiWrapper";

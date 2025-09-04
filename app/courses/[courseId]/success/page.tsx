@@ -4,16 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  CheckCircle,
-  Rocket,
-  Star,
-  Zap,
-  Award,
-  Sparkles,
-  Gift,
-  Clock,
-} from "lucide-react";
+import { CheckCircle, Rocket, Zap, Award, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 import ConfettiWrapper from "@/components/styled/ConfettiWrapper";
@@ -60,7 +51,7 @@ const SuccessPage = ({
             Congratulations, {user?.firstName || "Learner"}!
           </h1>
           <p className="text-xl text-gray-300">
-            You've successfully enrolled in the course
+            You have successfully enrolled in the course
           </p>
         </motion.div>
 
