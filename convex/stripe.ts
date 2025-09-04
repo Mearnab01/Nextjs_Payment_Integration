@@ -8,7 +8,7 @@ export const createCheckoutSession = action({
   args: { courseId: v.id("courses") },
   handler: async (ctx, args): Promise<{ checkoutUrl: string | null }> => {
     const identity = await ctx.auth.getUserIdentity();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     // TODO: console.log("Final URL:", `${process.env.NEXT_PUBLIC_APP_URL}/courses`);
 
     if (!identity) {
